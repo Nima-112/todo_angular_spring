@@ -1,0 +1,14 @@
+<mat-toolbar class="appbar" color="primary">
+  <div class="brand">Mes Tâches</div>
+  <span class="spacer"></span>
+  @if (auth.isAuthenticated()) {
+    <button mat-button (click)="logout()">Déconnexion</button>
+  }
+  <button mat-icon-button (click)="toggleTheme()">
+    <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div class="container">
+  <router-outlet></router-outlet>
+</div>

@@ -1,0 +1,92 @@
+<div class="container">
+
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-subtitle>Liste de tâches</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+    <section class="controls">
+      <div class="filters">
+        <mat-button-toggle-group [value]="filter()" (change)="setFilter($any($event.value))" class="seg">
+          <mat-button-toggle value="all">tous</mat-button-toggle>
+          <mat-button-toggle value="active">actifs</mat-button-toggle>
+          <mat-button-toggle value="completed">complétés</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <div class="search-sort">
+        <mat-form-field appearance="outline" class="search">
+          <mat-icon matSuffix>search</mat-icon>
+          <input matInput type="text" placeholder="Recherche" [value]="search()" (input)="search.set($any($event.target).value); loadTodos()">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="sort">
+          <mat-select [value]="sortBy()" (selectionChange)="setSortBy($any($event.value))">
+            <mat-option value="orderIndex">ordre</mat-option>
+            <mat-option value="createdAt">créé le</mat-option>
+            <mat-option value="priority">priorité</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-button (click)="setDirection(direction()==='asc' ? 'desc' : 'asc')">{{ direction() }}</button>
+      </div>
+    </section>
+    <mat-divider></mat-divider>
+    <section class="kpis">
+      <div class="kpis-left">
+        <mat-chip-set>
+          <mat-chip selected color="primary">Total {{ countTotal() }}</mat-chip>
+          <mat-chip selected color="accent">Actifs {{ countActive() }}</mat-chip>
+          <mat-chip selected color="warn">Complétés {{ countCompleted() }}</mat-chip>
+        </mat-chip-set>
+      </div>
+      <div class="bulk">
+        <button mat-stroked-button color="primary" (click)="completeAll()">Tout compléter</button>
+      </div>
+    </section>
+
+    <section class="add-todo">
+      <mat-form-field appearance="outline" class="add-input">
+        <input #input matInput type="text" placeholder="Nouvelle tâche" (keyup.enter)="addTodo(input.value); input.value=''">
+      </mat-form-field>
+      <button mat-mini-fab color="primary" (click)="addTodo(input.value); input.value=''">
+        <mat-icon>add</mat-icon>
+      </button>
+    </section>
+
+    
+
+    @if (isLoading()) {
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+    } @else {
+      <section class="todos" cdkDropList (cdkDropListDropped)="drop($event)">
+        @for (todo of todos(); track todo.id) {
+          <article class="todo-item" cdkDrag>
+            <button mat-icon-button class="drag" cdkDragHandle>
+              <mat-icon>drag_indicator</mat-icon>
+            </button>
+            <label class="checkbox">
+              <input type="checkbox" [checked]="todo.completed" (change)="toggle(todo)">
+              <span class="checkmark"></span>
+            </label>
+
+            @if (editingId() === todo.id) {
+              <input class="title-input" type="text" [value]="editingTitle()" (keyup.enter)="commitEdit(todo)" (keyup.escape)="cancelEdit()" (input)="editingTitle.set($any($event.target).value)" (blur)="commitEdit(todo)" />
+            } @else {
+              <span class="title" [class.completed]="todo.completed" (dblclick)="startEdit(todo)">{{ todo.title }}</span>
+            }
+
+            <button mat-icon-button color="warn" (click)="delete(todo.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </article>
+        } @empty {
+          <div class="empty">
+            <mat-icon>check_circle</mat-icon>
+            <p>Aucune tâche ! Profite</p>
+          </div>
+        }
+      </section>
+    }
+    </mat-card-content>
+  </mat-card>
+</div>

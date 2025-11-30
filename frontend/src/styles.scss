@@ -1,0 +1,63 @@
+@use '@angular/material' as mat;
+@include mat.core();
+
+// Light theme (Material v20 palettes)
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$violet-palette,
+    tertiary: mat.$green-palette,
+  ),
+));
+
+// Dark theme (Material v20 palettes)
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$violet-palette,
+    tertiary: mat.$green-palette,
+  ),
+));
+
+// Apply themes: light globally, dark scoped
+@include mat.all-component-themes($light-theme);
+[data-theme="dark"] {
+  @include mat.all-component-colors($dark-theme);
+}
+
+html, body { height: 100%; margin: 0; background: var(--bg, #f8fafc); transition: background 0.4s; }
+
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --text: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --primary: #8b5cf6;
+  --primary-2: #a78bfa;
+  --accent: #22c55e;
+  --warn: #ef4444;
+  --border: #334155;
+}
+
+[data-theme="light"] {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --text: #1e293b;
+  --text-secondary: #64748b;
+  --primary: #4f46e5;
+  --primary-2: #7c3aed;
+  --accent: #10b981;
+  --warn: #ef4444;
+  --border: #e2e8f0;
+}
+
+body { color: var(--text); background: var(--bg); }
+
+.mat-mdc-card { background: var(--surface); color: var(--text); }
+.mat-mdc-form-field .mdc-text-field__input { color: var(--text); }
+.mat-mdc-form-field .mdc-notched-outline__leading,
+.mat-mdc-form-field .mdc-notched-outline__trailing { border-color: var(--border) !important; }
+.mat-mdc-form-field .mdc-text-field { background-color: transparent; }
+.mat-mdc-select-value, .mat-mdc-select-arrow { color: var(--text); }
+.mdc-button--outlined { border-color: var(--border); }
+.mat-icon { color: var(--text-secondary); }
